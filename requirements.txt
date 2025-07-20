@@ -1,1 +1,2 @@
-# No external dependencies required - all modules used are part of Python standard library 
+streamlit>=1.28.0
+pandas>=1.5.0 

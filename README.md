@@ -8,14 +8,27 @@ A comprehensive Python application that compares the financial benefits of home 
 
 ## 🎯 Quick Start
 
+### 🌐 Web Version (Recommended)
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/home-ownership-calculator.git
-cd home-ownership-calculator
+git clone https://github.com/mvbuff/rent-vs-buy-calculator.git
+cd rent-vs-buy-calculator
 
-# Run the application
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the web application
+streamlit run streamlit_app.py
+```
+
+### 🖥️ Desktop Version
+```bash
+# Run the desktop application (no dependencies required)
 python3 home_calculator.py
 ```
+
+### ☁️ Online Demo
+**Try it online:** [Streamlit Cloud Demo](https://your-app-name.streamlit.app) *(Deploy to get this link)*
 
 ## 📸 Screenshots
 
@@ -154,6 +167,34 @@ Default values represent a typical scenario:
 - **Tax Deductions**: Mortgage interest only (up to $750k principal) - property tax not deductible
 - **Capital Gains**: Tax benefit calculated as tax_slab × home_growth_value (when exemption enabled)
 - **Annual Growth**: Applied to house prices, rent, and all other relevant metrics
+
+## 🚀 Deployment Options
+
+### Streamlit Cloud (Free)
+1. Push your code to GitHub
+2. Go to [Streamlit Cloud](https://streamlit.io/cloud)
+3. Connect your GitHub repository
+4. Deploy `streamlit_app.py`
+
+### Heroku
+```bash
+# Create Procfile
+echo "web: streamlit run streamlit_app.py --server.port=\$PORT --server.address=0.0.0.0" > Procfile
+
+# Deploy to Heroku
+heroku create your-app-name
+git push heroku main
+```
+
+### Render.com
+1. Connect your GitHub repository
+2. Set build command: `pip install -r requirements.txt`
+3. Set start command: `streamlit run streamlit_app.py --server.port=10000 --server.address=0.0.0.0`
+
+## 📱 Versions Available
+
+- **🌐 Web Version** (`streamlit_app.py`) - Modern web interface, mobile-friendly
+- **🖥️ Desktop Version** (`home_calculator.py`) - Traditional Tkinter GUI, no internet required
 
 ## 🤝 Contributing
 
