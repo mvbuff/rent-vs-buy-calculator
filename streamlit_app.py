@@ -236,6 +236,8 @@ def main():
                 st.write(f"**Total Maintenance (+):** ${st.session_state.summary['total_maintenance']:,.0f}")
                 st.write(f"**Total Property Tax (+):** ${st.session_state.summary['total_property_tax']:,.0f}")
                 st.write(f"**Total Selling Costs (+):** ${st.session_state.summary['total_selling_costs']:,.0f}")
+                if inputs['stocks_enabled'] and inputs['include_down_payment_growth']:
+                    st.write(f"**Down Payment Opportunity Cost (+):** ${st.session_state.summary['down_payment_opportunity_cost']:,.0f}")
                 st.write("---")
                 st.write(f"**Home Appreciation (-):** ${st.session_state.summary['home_sale_gains']:,.0f}")
                 st.write(f"**Interest Tax Savings (-) @ {inputs['tax_rate']:.1f}% Tax Slab:** ${st.session_state.summary['total_interest_tax_savings']:,.0f}")

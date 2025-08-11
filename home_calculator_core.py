@@ -245,8 +245,16 @@ class HomeCalculatorCore:
         total_maintenance = inputs.get('maintenance_annual', 0) * inputs['years']
         rental_standard_deduction_benefit = inputs.get('standard_deduction', 0) * inputs['years'] * (inputs['tax_rate'] / 100)
         
+        # Calculate down payment opportunity cost for ownership
+        down_payment_amount = inputs['home_price'] * (inputs['down_payment_pct'] / 100)
+        down_payment_opportunity_cost = 0
+        if inputs.get('stocks_enabled', False) and inputs.get('include_down_payment_growth', True):
+            # What the down payment could have grown to if invested in stocks
+            potential_down_payment_value = down_payment_amount * ((1 + inputs.get('stock_growth', 8.0)/100) ** inputs['years'])
+            down_payment_opportunity_cost = potential_down_payment_value - down_payment_amount
+        
         rent_net_cost = total_rent + capital_gains_tax_owed - stock_investment_gains - rental_standard_deduction_benefit
-        ownership_net_cost = total_interest + total_maintenance + total_property_tax + total_selling_costs - (total_interest_tax_savings + capital_gains_tax_savings) - home_sale_gains
+        ownership_net_cost = total_interest + total_maintenance + total_property_tax + total_selling_costs + down_payment_opportunity_cost - (total_interest_tax_savings + capital_gains_tax_savings) - home_sale_gains
         
         return {
             'total_rent': total_rent,
@@ -261,6 +269,7 @@ class HomeCalculatorCore:
             'stock_investment_gains': stock_investment_gains,
             'capital_gains_tax_owed': capital_gains_tax_owed,
             'rental_standard_deduction_benefit': rental_standard_deduction_benefit,
+            'down_payment_opportunity_cost': down_payment_opportunity_cost,
             'rent_net_cost': rent_net_cost,
             'ownership_net_cost': ownership_net_cost,
             'winner': 'HOME OWNERSHIP' if ownership_net_cost < rent_net_cost else 'RENTING',
