@@ -236,8 +236,6 @@ def main():
                 st.write(f"**Total Maintenance (+):** ${st.session_state.summary['total_maintenance']:,.0f}")
                 st.write(f"**Total Property Tax (+):** ${st.session_state.summary['total_property_tax']:,.0f}")
                 st.write(f"**Total Selling Costs (+):** ${st.session_state.summary['total_selling_costs']:,.0f}")
-                if inputs['stocks_enabled'] and inputs['include_down_payment_growth']:
-                    st.write(f"**Down Payment Opportunity Cost (+):** ${st.session_state.summary['down_payment_opportunity_cost']:,.0f}")
                 st.write("---")
                 st.write(f"**Home Appreciation (-):** ${st.session_state.summary['home_sale_gains']:,.0f}")
                 st.write(f"**Interest Tax Savings (-) @ {inputs['tax_rate']:.1f}% Tax Slab:** ${st.session_state.summary['total_interest_tax_savings']:,.0f}")
@@ -250,8 +248,24 @@ def main():
                     st.write(f"**Capital Gains Tax on Stocks (+):** ${st.session_state.summary['capital_gains_tax_owed']:,.0f}")
                 st.write("---")
                 if inputs['stocks_enabled']:
-                    st.write(f"**Stock Investment Gains (-):** ${st.session_state.summary['stock_investment_gains']:,.0f}")
+                    if inputs['include_down_payment_growth']:
+                        st.write(f"**Down Payment Investment Gain (-):** ${st.session_state.summary['down_payment_investment_gain']:,.0f}")
+                    st.write(f"**EMI-Rent Difference Investment Gain (-):** ${st.session_state.summary['emi_rent_diff_investment_gain']:,.0f}")
+                    st.write(f"**Total Stock Investment Gains (-):** ${st.session_state.summary['stock_investment_gains']:,.0f}")
                 st.write(f"**Standard Deduction Benefit (-) @ {inputs['tax_rate']:.1f}% Tax Slab:** ${st.session_state.summary['rental_standard_deduction_benefit']:,.0f}")
+                
+                # Add explanation section
+                if inputs['stocks_enabled']:
+                    st.write("---")
+                    st.markdown("#### 📊 Stock Investment Calculation Details")
+                    if inputs['include_down_payment_growth']:
+                        down_payment = inputs['home_price'] * (inputs['down_payment_pct'] / 100)
+                        st.write(f"• **Down Payment**: ${down_payment:,.0f} invested at {inputs['stock_growth']:.1f}% for {inputs['years']} years")
+                        final_dp_value = down_payment * ((1 + inputs['stock_growth']/100) ** inputs['years'])
+                        st.write(f"• **Grows to**: ${final_dp_value:,.0f} (gain: ${st.session_state.summary['down_payment_investment_gain']:,.0f})")
+                    st.write(f"• **Monthly EMI-Rent savings** invested annually at {inputs['stock_growth']:.1f}%")
+                    st.write(f"• **Total investment gains**: ${st.session_state.summary['stock_investment_gains']:,.0f}")
+                    st.write(f"• **Capital gains tax** ({inputs['capital_gains_tax_rate']:.1f}%): ${st.session_state.summary['capital_gains_tax_owed']:,.0f}")
 
 if __name__ == "__main__":
     main() 
