@@ -93,6 +93,7 @@ class HomeCalculator:
             'calculated': False
         }
         st.session_state.active_scenario = new_scenario_name
+        self.sync_legacy_session_state()
         return new_scenario_name
     
     def delete_scenario(self, scenario_name):
@@ -101,6 +102,7 @@ class HomeCalculator:
             del st.session_state.scenarios[scenario_name]
             # Switch to first available scenario
             st.session_state.active_scenario = list(st.session_state.scenarios.keys())[0]
+            self.sync_legacy_session_state()
     
     def rename_scenario(self, old_name, new_name):
         """Rename a scenario"""
@@ -124,6 +126,17 @@ class HomeCalculator:
         current_scenario['rent_data'] = rent_data
         current_scenario['summary'] = summary
         current_scenario['calculated'] = True
+    
+    def sync_legacy_session_state(self):
+        """Sync legacy session state with current scenario data"""
+        current_scenario = self.get_current_scenario()
+        if current_scenario['calculated']:
+            st.session_state.mortgage_data = current_scenario['mortgage_data']
+            st.session_state.rent_data = current_scenario['rent_data']
+            st.session_state.summary = current_scenario['summary']
+            st.session_state.calculated = True
+        else:
+            st.session_state.calculated = False
     
     def _format_mortgage_data(self, raw_data):
         """Format mortgage data for display"""
@@ -185,7 +198,10 @@ def main():
             selected_tab = scenario_names[0]
             st.write(f"**{selected_tab}**")
         
-        st.session_state.active_scenario = selected_tab
+        # Update active scenario and sync data if it changed
+        if st.session_state.active_scenario != selected_tab:
+            st.session_state.active_scenario = selected_tab
+            calculator.sync_legacy_session_state()
     
     with col2:
         if st.button("➕ Add Scenario"):
@@ -204,9 +220,10 @@ def main():
     
     st.markdown("---")
     
-    # Get current scenario data
+    # Get current scenario data and sync legacy session state
     current_scenario = calculator.get_current_scenario()
     current_inputs = current_scenario['inputs']
+    calculator.sync_legacy_session_state()
     
     # Sidebar for inputs
     with st.sidebar:
