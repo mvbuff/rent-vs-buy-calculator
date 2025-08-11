@@ -122,7 +122,7 @@ def main():
         down_payment_pct = st.number_input("Down Payment (%)", min_value=0.0, max_value=100.0, value=DEFAULT_VALUES['down_payment_pct'], step=0.5)
         apr = st.number_input("30-Year Fixed APR (%)", min_value=0.1, max_value=20.0, value=DEFAULT_VALUES['apr'], step=0.01)
         property_tax_rate = st.number_input("Property Tax (% per year)", min_value=0.0, max_value=10.0, value=DEFAULT_VALUES['property_tax_rate'], step=0.01)
-        property_tax_growth = st.number_input("Property Tax Growth (% per year, CA Prop 13 = 2%)", min_value=0.0, max_value=10.0, value=DEFAULT_VALUES['property_tax_growth'], step=0.01)
+        property_tax_growth = st.number_input("Property Tax Growth (% per year, CA Prop 13 = 2%)", min_value=0.0, max_value=10.0, value=DEFAULT_VALUES.get('property_tax_growth', 2.0), step=0.01)
         house_growth = st.number_input("House Price Growth (% per year)", min_value=-10.0, max_value=50.0, value=DEFAULT_VALUES['house_growth'], step=0.1)
         maintenance_annual = st.number_input("Maintenance Expense Annual ($)", min_value=0, max_value=100000, value=DEFAULT_VALUES['maintenance_annual'], step=500)
         brokerage_cost = st.number_input("Brokerage Cost (% of sale price)", min_value=0.0, max_value=20.0, value=DEFAULT_VALUES['brokerage_cost'], step=0.1)
