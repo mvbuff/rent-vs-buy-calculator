@@ -4,6 +4,7 @@ import streamlit as st
 import pandas as pd
 from home_calculator_core import HomeCalculatorCore, DEFAULT_VALUES
 import copy
+import time
 
 # Page configuration
 st.set_page_config(
@@ -39,7 +40,62 @@ st.markdown("""
         margin: 20px 0;
         background-color: #f8f9fa;
     }
+    
+    /* Add debouncing to number input buttons */
+    .stNumberInput button {
+        transition: all 0.15s ease-in-out !important;
+        pointer-events: auto !important;
+    }
+    
+    .stNumberInput button:active {
+        transform: scale(0.95) !important;
+        transition: all 0.05s ease-in-out !important;
+    }
+    
+    /* Prevent rapid clicking by adding a brief delay */
+    .stNumberInput button:hover {
+        transition: all 0.1s ease-in-out !important;
+    }
+    
+    /* Add click debouncing */
+    .stNumberInput button {
+        min-width: 32px !important;
+        min-height: 32px !important;
+    }
 </style>
+
+<script>
+// Add debouncing to number input buttons
+(function() {
+    let lastClickTime = 0;
+    const DEBOUNCE_DELAY = 150; // 150ms debounce
+    
+    function addDebouncing() {
+        const buttons = document.querySelectorAll('.stNumberInput button');
+        buttons.forEach(button => {
+            if (!button.hasAttribute('data-debounced')) {
+                button.setAttribute('data-debounced', 'true');
+                button.addEventListener('click', function(e) {
+                    const now = Date.now();
+                    if (now - lastClickTime < DEBOUNCE_DELAY) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
+                    lastClickTime = now;
+                }, true);
+            }
+        });
+    }
+    
+    // Run on page load
+    addDebouncing();
+    
+    // Re-run when Streamlit updates the page
+    const observer = new MutationObserver(addDebouncing);
+    observer.observe(document.body, { childList: true, subtree: true });
+})();
+</script>
 """, unsafe_allow_html=True)
 
 class HomeCalculator:
@@ -137,6 +193,12 @@ class HomeCalculator:
             st.session_state.calculated = True
         else:
             st.session_state.calculated = False
+    
+    def on_input_change(self):
+        """Callback for when input values change - simple debouncing"""
+        # Simple debouncing - just mark that an input changed
+        current_time = time.time()
+        st.session_state.last_input_change = current_time
     
     def _format_mortgage_data(self, raw_data):
         """Format mortgage data for display"""
