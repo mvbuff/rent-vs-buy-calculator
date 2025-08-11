@@ -229,43 +229,46 @@ def main():
     with st.sidebar:
         st.header("📊 Input Parameters")
         
+        # Generate unique keys for widgets based on active scenario
+        scenario_key = st.session_state.active_scenario.replace(" ", "_").lower()
+        
         # General Settings
         st.subheader("⏱️ General Settings")
-        years = st.number_input("Number of Years to Compare", min_value=1, max_value=50, value=current_inputs['years'])
+        years = st.number_input("Number of Years to Compare", min_value=1, max_value=50, value=current_inputs['years'], key=f"{scenario_key}_years")
         
         # Home Purchase Details
         st.subheader("🏠 Home Purchase Details")
-        home_price = st.number_input("Home Price ($)", min_value=50000, max_value=10000000, value=current_inputs['home_price'], step=10000)
-        down_payment_pct = st.number_input("Down Payment (%)", min_value=0.0, max_value=100.0, value=current_inputs['down_payment_pct'], step=0.5)
-        apr = st.number_input("30-Year Fixed APR (%)", min_value=0.1, max_value=20.0, value=current_inputs['apr'], step=0.01)
-        property_tax_rate = st.number_input("Property Tax (% per year)", min_value=0.0, max_value=10.0, value=current_inputs['property_tax_rate'], step=0.01)
-        property_tax_growth = st.number_input("Property Tax Growth (% per year, CA Prop 13 = 2%)", min_value=0.0, max_value=10.0, value=current_inputs.get('property_tax_growth', 2.0), step=0.01)
-        house_growth = st.number_input("House Price Growth (% per year)", min_value=-10.0, max_value=50.0, value=current_inputs['house_growth'], step=0.1)
-        maintenance_annual = st.number_input("Maintenance Expense Annual ($)", min_value=0, max_value=100000, value=current_inputs['maintenance_annual'], step=500)
-        brokerage_cost = st.number_input("Brokerage Cost (% of sale price)", min_value=0.0, max_value=20.0, value=current_inputs['brokerage_cost'], step=0.1)
-        registration_cost = st.number_input("Registration Expenses (% of purchase price)", min_value=0.0, max_value=10.0, value=current_inputs['registration_cost'], step=0.1)
-        capital_gains_exemption_enabled = st.checkbox("Include Capital Gains Tax Benefit on Home Growth", value=current_inputs['capital_gains_exemption_enabled'])
+        home_price = st.number_input("Home Price ($)", min_value=50000, max_value=10000000, value=current_inputs['home_price'], step=10000, key=f"{scenario_key}_home_price")
+        down_payment_pct = st.number_input("Down Payment (%)", min_value=0.0, max_value=100.0, value=current_inputs['down_payment_pct'], step=0.5, key=f"{scenario_key}_down_payment_pct")
+        apr = st.number_input("30-Year Fixed APR (%)", min_value=0.1, max_value=20.0, value=current_inputs['apr'], step=0.01, key=f"{scenario_key}_apr")
+        property_tax_rate = st.number_input("Property Tax (% per year)", min_value=0.0, max_value=10.0, value=current_inputs['property_tax_rate'], step=0.01, key=f"{scenario_key}_property_tax_rate")
+        property_tax_growth = st.number_input("Property Tax Growth (% per year, CA Prop 13 = 2%)", min_value=0.0, max_value=10.0, value=current_inputs.get('property_tax_growth', 2.0), step=0.01, key=f"{scenario_key}_property_tax_growth")
+        house_growth = st.number_input("House Price Growth (% per year)", min_value=-10.0, max_value=50.0, value=current_inputs['house_growth'], step=0.1, key=f"{scenario_key}_house_growth")
+        maintenance_annual = st.number_input("Maintenance Expense Annual ($)", min_value=0, max_value=100000, value=current_inputs['maintenance_annual'], step=500, key=f"{scenario_key}_maintenance_annual")
+        brokerage_cost = st.number_input("Brokerage Cost (% of sale price)", min_value=0.0, max_value=20.0, value=current_inputs['brokerage_cost'], step=0.1, key=f"{scenario_key}_brokerage_cost")
+        registration_cost = st.number_input("Registration Expenses (% of purchase price)", min_value=0.0, max_value=10.0, value=current_inputs['registration_cost'], step=0.1, key=f"{scenario_key}_registration_cost")
+        capital_gains_exemption_enabled = st.checkbox("Include Capital Gains Tax Benefit on Home Growth", value=current_inputs['capital_gains_exemption_enabled'], key=f"{scenario_key}_capital_gains_exemption_enabled")
         
         # Rental Details
         st.subheader("🏠 Rental Details")
-        monthly_rent = st.number_input("Monthly Rent ($)", min_value=500, max_value=50000, value=current_inputs['monthly_rent'], step=50)
-        rent_growth = st.number_input("Rent Growth (% per year)", min_value=0.0, max_value=20.0, value=current_inputs['rent_growth'], step=0.1)
+        monthly_rent = st.number_input("Monthly Rent ($)", min_value=500, max_value=50000, value=current_inputs['monthly_rent'], step=50, key=f"{scenario_key}_monthly_rent")
+        rent_growth = st.number_input("Rent Growth (% per year)", min_value=0.0, max_value=20.0, value=current_inputs['rent_growth'], step=0.1, key=f"{scenario_key}_rent_growth")
         
         # Income & Tax Details
         st.subheader("💰 Income & Tax Details")
-        monthly_income = st.number_input("Monthly Income ($)", min_value=1000, max_value=200000, value=current_inputs['monthly_income'], step=500)
-        income_growth = st.number_input("Monthly Income Growth (% per year)", min_value=0.0, max_value=50.0, value=current_inputs['income_growth'], step=0.1)
-        rsu_income = st.number_input("RSUs Income Supplement ($)", min_value=0, max_value=1000000, value=current_inputs['rsu_income'], step=1000)
-        tax_rate = st.number_input("IRS Max Tax Slab (%)", min_value=0.0, max_value=50.0, value=current_inputs['tax_rate'], step=0.5)
-        standard_deduction = st.number_input("Standard Deduction ($)", min_value=0, max_value=100000, value=current_inputs['standard_deduction'], step=1000)
+        monthly_income = st.number_input("Monthly Income ($)", min_value=1000, max_value=200000, value=current_inputs['monthly_income'], step=500, key=f"{scenario_key}_monthly_income")
+        income_growth = st.number_input("Monthly Income Growth (% per year)", min_value=0.0, max_value=50.0, value=current_inputs['income_growth'], step=0.1, key=f"{scenario_key}_income_growth")
+        rsu_income = st.number_input("RSUs Income Supplement ($)", min_value=0, max_value=1000000, value=current_inputs['rsu_income'], step=1000, key=f"{scenario_key}_rsu_income")
+        tax_rate = st.number_input("IRS Max Tax Slab (%)", min_value=0.0, max_value=50.0, value=current_inputs['tax_rate'], step=0.5, key=f"{scenario_key}_tax_rate")
+        standard_deduction = st.number_input("Standard Deduction ($)", min_value=0, max_value=100000, value=current_inputs['standard_deduction'], step=1000, key=f"{scenario_key}_standard_deduction")
         
         # Stock Investment Settings
         st.subheader("📈 Stock Investment Settings")
-        stocks_enabled = st.checkbox("Enable Stock Investment Analysis", value=current_inputs['stocks_enabled'])
+        stocks_enabled = st.checkbox("Enable Stock Investment Analysis", value=current_inputs['stocks_enabled'], key=f"{scenario_key}_stocks_enabled")
         if stocks_enabled:
-            include_down_payment_growth = st.checkbox("Include Down Payment Growth", value=current_inputs['include_down_payment_growth'])
-            stock_growth = st.number_input("Stock Market Growth (% per year)", min_value=0.0, max_value=50.0, value=current_inputs['stock_growth'], step=0.1)
-            capital_gains_tax_rate = st.number_input("Capital Gains Tax Rate (%)", min_value=0.0, max_value=50.0, value=current_inputs['capital_gains_tax_rate'], step=0.5)
+            include_down_payment_growth = st.checkbox("Include Down Payment Growth", value=current_inputs['include_down_payment_growth'], key=f"{scenario_key}_include_down_payment_growth")
+            stock_growth = st.number_input("Stock Market Growth (% per year)", min_value=0.0, max_value=50.0, value=current_inputs['stock_growth'], step=0.1, key=f"{scenario_key}_stock_growth")
+            capital_gains_tax_rate = st.number_input("Capital Gains Tax Rate (%)", min_value=0.0, max_value=50.0, value=current_inputs['capital_gains_tax_rate'], step=0.5, key=f"{scenario_key}_capital_gains_tax_rate")
         else:
             include_down_payment_growth = False
             stock_growth = 0
