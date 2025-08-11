@@ -40,6 +40,7 @@ class HomeCalculatorCore:
         down_payment_pct: float,
         apr: float,
         property_tax_rate: float,
+        property_tax_growth: float,
         house_growth: float,
         tax_rate: float,
         years: int
@@ -52,6 +53,7 @@ class HomeCalculatorCore:
             down_payment_pct: Down payment percentage
             apr: Annual percentage rate
             property_tax_rate: Property tax rate (percentage)
+            property_tax_growth: Annual property tax growth rate (percentage, CA Prop 13 = 2%)
             house_growth: Annual home price growth rate (percentage)
             tax_rate: Income tax rate for deduction calculations (percentage)
             years: Number of years to analyze
@@ -66,6 +68,7 @@ class HomeCalculatorCore:
         mortgage_data = []
         current_balance = loan_amount
         current_home_value = home_price
+        current_property_tax_base = home_price  # Separate tax base for Prop 13
         
         for year in range(1, years + 1):
             # Mortgage calculations
@@ -74,7 +77,10 @@ class HomeCalculatorCore:
             year_principal = annual_payment - year_interest
             current_balance = max(0, current_balance - year_principal)
             current_home_value *= (1 + house_growth / 100)
-            annual_property_tax = current_home_value * (property_tax_rate / 100)
+            
+            # Property tax calculation with Prop 13 limits
+            current_property_tax_base *= (1 + property_tax_growth / 100)
+            annual_property_tax = current_property_tax_base * (property_tax_rate / 100)
             
             # Interest tax deduction (limited to $750k principal)
             deductible_principal_limit = 750000
@@ -278,6 +284,7 @@ class HomeCalculatorCore:
             down_payment_pct=inputs['down_payment_pct'],
             apr=inputs['apr'],
             property_tax_rate=inputs['property_tax_rate'],
+            property_tax_growth=inputs.get('property_tax_growth', 2.0),  # Default CA Prop 13 limit
             house_growth=inputs['house_growth'],
             tax_rate=inputs['tax_rate'],
             years=inputs['years']
@@ -312,7 +319,8 @@ DEFAULT_VALUES = {
     'home_price': 1500000,
     'down_payment_pct': 20.0,
     'apr': 5.75,
-    'property_tax_rate': 1.45,
+    'property_tax_rate': 1.25,
+    'property_tax_growth': 2.0,  # CA Proposition 13 limit
     'house_growth': 3.0,
     'maintenance_annual': 10000,
     'brokerage_cost': 6.0,

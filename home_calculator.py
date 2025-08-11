@@ -108,13 +108,14 @@ class HomeRentCalculator:
         
         purchase_inputs = [
             ("Home Price ($):", "home_price", str(DEFAULT_VALUES['home_price'])),
-            ("Down Payment (%):", "down_payment_pct", "20"),
-            ("30-Year Fixed APR (%):", "apr", "5.75"),
+            ("Down Payment (%):", "down_payment_pct", str(DEFAULT_VALUES['down_payment_pct'])),
+            ("30-Year Fixed APR (%):", "apr", str(DEFAULT_VALUES['apr'])),
             ("Property Tax (% per year):", "property_tax", str(DEFAULT_VALUES['property_tax_rate'])),
-            ("House Price Growth (% per year):", "house_growth", "3.0"),
-            ("Maintenance Expense Annual ($):", "maintenance_annual", "10000"),
-            ("Brokerage Cost (% of sale price):", "brokerage_cost", "6.0"),
-            ("Registration Expenses (% of sale price):", "registration_cost", "2.0")
+            ("Property Tax Growth (% per year, CA Prop 13 = 2%):", "property_tax_growth", str(DEFAULT_VALUES['property_tax_growth'])),
+            ("House Price Growth (% per year):", "house_growth", str(DEFAULT_VALUES['house_growth'])),
+            ("Maintenance Expense Annual ($):", "maintenance_annual", str(DEFAULT_VALUES['maintenance_annual'])),
+            ("Brokerage Cost (% of sale price):", "brokerage_cost", str(DEFAULT_VALUES['brokerage_cost'])),
+            ("Registration Expenses (% of sale price):", "registration_cost", str(DEFAULT_VALUES['registration_cost']))
         ]
         
         self.purchase_entries = {}
@@ -154,11 +155,11 @@ class HomeRentCalculator:
         income_frame.grid(row=3, column=0, sticky=(tk.W, tk.E), pady=(0, 10))
         
         income_inputs = [
-            ("Monthly Income ($):", "monthly_income", "8000"),
-            ("Monthly Income Growth (% per year):", "income_growth", "4.0"),
-            ("RSUs Income Supplement ($):", "rsu_income", "0"),
-            ("IRS Max Tax Slab (%):", "tax_rate", "35"),
-            ("Standard Deduction ($):", "standard_deduction", "0")
+            ("Monthly Income ($):", "monthly_income", str(DEFAULT_VALUES['monthly_income'])),
+            ("Monthly Income Growth (% per year):", "income_growth", str(DEFAULT_VALUES['income_growth'])),
+            ("RSUs Income Supplement ($):", "rsu_income", str(DEFAULT_VALUES['rsu_income'])),
+            ("IRS Max Tax Slab (%):", "tax_rate", str(DEFAULT_VALUES['tax_rate'])),
+            ("Standard Deduction ($):", "standard_deduction", str(DEFAULT_VALUES['standard_deduction']))
         ]
         
         self.income_entries = {}
@@ -249,6 +250,7 @@ class HomeRentCalculator:
             down_payment = home_price * (down_payment_pct / 100)
             apr = float(self.purchase_entries['apr'].get())
             property_tax_rate = float(self.purchase_entries['property_tax'].get())
+            property_tax_growth = float(self.purchase_entries['property_tax_growth'].get())
             house_growth = float(self.purchase_entries['house_growth'].get())
             maintenance_annual = float(self.purchase_entries['maintenance_annual'].get())
             brokerage_cost = float(self.purchase_entries['brokerage_cost'].get())
