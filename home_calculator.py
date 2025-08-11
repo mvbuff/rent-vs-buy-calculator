@@ -2,7 +2,7 @@
 
 import tkinter as tk
 from tkinter import ttk, messagebox
-import math
+from home_calculator_core import DEFAULT_VALUES
 from tkinter import font
 
 class HomeRentCalculator:
@@ -107,10 +107,10 @@ class HomeRentCalculator:
         purchase_frame.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 10))
         
         purchase_inputs = [
-            ("Home Price ($):", "home_price", "1500000"),
+            ("Home Price ($):", "home_price", str(DEFAULT_VALUES['home_price'])),
             ("Down Payment (%):", "down_payment_pct", "20"),
             ("30-Year Fixed APR (%):", "apr", "5.75"),
-            ("Property Tax (% per year):", "property_tax", "1.2"),
+            ("Property Tax (% per year):", "property_tax", str(DEFAULT_VALUES['property_tax_rate'])),
             ("House Price Growth (% per year):", "house_growth", "3.0"),
             ("Maintenance Expense Annual ($):", "maintenance_annual", "10000"),
             ("Brokerage Cost (% of sale price):", "brokerage_cost", "6.0"),
@@ -137,8 +137,8 @@ class HomeRentCalculator:
         rent_frame.grid(row=2, column=0, sticky=(tk.W, tk.E), pady=(0, 10))
         
         rent_inputs = [
-            ("Monthly Rent ($):", "monthly_rent", "4300"),
-            ("Rent Growth (% per year):", "rent_growth", "2.5")
+            ("Monthly Rent ($):", "monthly_rent", str(DEFAULT_VALUES['monthly_rent'])),
+            ("Rent Growth (% per year):", "rent_growth", str(DEFAULT_VALUES['rent_growth']))
         ]
         
         self.rent_entries = {}
@@ -532,9 +532,11 @@ class HomeRentCalculator:
         net_home_gains_after_costs = net_sale_proceeds - initial_home_value
         
         # Calculate capital gains tax benefit (tax saved on home growth)
+        # Use long-term capital gains tax rate, not ordinary income tax rate
+        home_capital_gains_rate = capital_gains_tax_rate if capital_gains_tax_rate > 0 else 20.0  # Default 20% if not set
         if capital_gains_exemption_enabled and home_sale_gains > 0:
-            # Tax benefit = tax_slab * growth_value (pure appreciation)
-            capital_gains_tax_savings = home_sale_gains * (tax_rate / 100)
+            # Tax benefit = long_term_capital_gains_rate * growth_value (pure appreciation)
+            capital_gains_tax_savings = home_sale_gains * (home_capital_gains_rate / 100)
         else:
             capital_gains_tax_savings = 0
         
@@ -620,50 +622,50 @@ class HomeRentCalculator:
 ├───────────────────────────────────┼───────────────────────────────────────────┤
 │                                   │                                           │
 │  EXPENSES:                        │  EXPENSES:                                │
-│  ① Rent Growth                    │  ① Interest Paid                         │
+│  ① Rent Growth (+)                │  ① Interest Paid (+)                     │
 │     ${total_rent:>20,.0f}         │     ${total_interest:>20,.0f}             │"""
         
         # Add capital gains tax line conditionally for rent side
         if stocks_enabled:
             summary_text += f"""
-│  ② Capital Gains Tax on Stocks   │  ② Maintenance (Annual)                  │
+│  ② Capital Gains Tax on Stocks (+) │  ② Maintenance (Annual) (+)             │
 │     ${capital_gains_tax_owed:>20,.0f}         │     ${total_maintenance:>20,.0f}          │"""
         else:
             summary_text += f"""
-│                                   │  ② Maintenance (Annual)                  │
+│                                   │  ② Maintenance (Annual) (+)              │
 │                                   │     ${total_maintenance:>20,.0f}          │"""
         
         summary_text += f"""
-│                                   │  ③ Property Tax                          │
+│                                   │  ③ Property Tax (+)                      │
 │                                   │     ${total_property_tax:>20,.0f}         │
-│                                   │  ④ Buy/Sell Costs                        │
+│                                   │  ④ Buy/Sell Costs (+)                    │
 │                                   │     ${total_selling_costs:>20,.0f}        │
 │                                   │                                           │
 │  SAVINGS:                         │  INCOME:                                  │"""
 
         if stocks_enabled:
             summary_text += f"""
-│  ① EMI-Rent Difference           │  ① Tax Deductions                        │
+│  ① EMI-Rent Difference (-)       │  ① Tax Deductions @ {tax_rate:.1f}% (-)       │
 │     ${abs(total_emi_rent_diff):>20,.0f}      │     ${total_interest_tax_savings:>20,.0f}         │
-│  ② Growth if Invested in Stocks  │  ② Home Growth                           │
+│  ② Growth if Invested in Stocks (-) │  ② Home Growth (-)                     │
 │     ${stock_investment_gains:>20,.0f}        │     ${home_sale_gains:>20,.0f}           │
-│  ③ Standard Deduction Benefit    │                                           │
+│  ③ Standard Deduction @ {tax_rate:.1f}% (-) │                                          │
 │     ${rental_standard_deduction_benefit:>20,.0f}        │                                           │"""
         else:
             summary_text += f"""
-│  ① EMI-Rent Difference           │  ① Tax Deductions                        │
+│  ① EMI-Rent Difference (-)       │  ① Tax Deductions @ {tax_rate:.1f}% (-)       │
 │     ${abs(total_emi_rent_diff):>20,.0f}      │     ${total_interest_tax_savings:>20,.0f}         │
-│  ② No Stock Investment           │  ② Home Growth                           │
+│  ② No Stock Investment (-)       │  ② Home Growth (-)                       │
 │     ${0:>20,.0f}        │     ${home_sale_gains:>20,.0f}           │
-│  ③ Standard Deduction Benefit    │                                           │
+│  ③ Standard Deduction @ {tax_rate:.1f}% (-) │                                          │
 │     ${rental_standard_deduction_benefit:>20,.0f}        │                                           │"""
         
         # Add capital gains exemption line conditionally
         capital_gains_line = ""
         if capital_gains_exemption_enabled:
             capital_gains_line = f"""
-│                                   │  ③ Capital Gains Tax Benefit             │
-│                                   │     (Tax Saved on Home Growth)           │
+│                                   │  ③ Capital Gains Tax Benefit (-)         │
+│                                   │     (Tax Saved @ {home_capital_gains_rate:.1f}% LTCG Rate)     │
 │                                   │     ${capital_gains_tax_savings:>20,.0f}         │"""
         else:
             capital_gains_line = """
