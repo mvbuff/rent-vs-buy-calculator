@@ -115,7 +115,7 @@ class HomeRentCalculator:
             ("House Price Growth (% per year):", "house_growth", str(DEFAULT_VALUES['house_growth'])),
             ("Maintenance Expense Annual ($):", "maintenance_annual", str(DEFAULT_VALUES['maintenance_annual'])),
             ("Brokerage Cost (% of sale price):", "brokerage_cost", str(DEFAULT_VALUES['brokerage_cost'])),
-            ("Registration Expenses (% of sale price):", "registration_cost", str(DEFAULT_VALUES['registration_cost']))
+            ("Registration Expenses (% of purchase price):", "registration_cost", str(DEFAULT_VALUES['registration_cost']))
         ]
         
         self.purchase_entries = {}

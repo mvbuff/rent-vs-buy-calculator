@@ -126,7 +126,7 @@ def main():
         house_growth = st.number_input("House Price Growth (% per year)", min_value=-10.0, max_value=50.0, value=DEFAULT_VALUES['house_growth'], step=0.1)
         maintenance_annual = st.number_input("Maintenance Expense Annual ($)", min_value=0, max_value=100000, value=DEFAULT_VALUES['maintenance_annual'], step=500)
         brokerage_cost = st.number_input("Brokerage Cost (% of sale price)", min_value=0.0, max_value=20.0, value=DEFAULT_VALUES['brokerage_cost'], step=0.1)
-        registration_cost = st.number_input("Registration Expenses (% of sale price)", min_value=0.0, max_value=10.0, value=DEFAULT_VALUES['registration_cost'], step=0.1)
+        registration_cost = st.number_input("Registration Expenses (% of purchase price)", min_value=0.0, max_value=10.0, value=DEFAULT_VALUES['registration_cost'], step=0.1)
         capital_gains_exemption_enabled = st.checkbox("Include Capital Gains Tax Benefit on Home Growth", value=DEFAULT_VALUES['capital_gains_exemption_enabled'])
         
         # Rental Details
@@ -235,6 +235,8 @@ def main():
                 st.write(f"**Total Interest Paid (+):** ${st.session_state.summary['total_interest']:,.0f}")
                 st.write(f"**Total Maintenance (+):** ${st.session_state.summary['total_maintenance']:,.0f}")
                 st.write(f"**Total Property Tax (+):** ${st.session_state.summary['total_property_tax']:,.0f}")
+                st.write(f"**Brokerage Costs (+):** ${st.session_state.summary['brokerage_costs']:,.0f}")
+                st.write(f"**Registration Costs (+):** ${st.session_state.summary['registration_costs']:,.0f}")
                 st.write(f"**Total Selling Costs (+):** ${st.session_state.summary['total_selling_costs']:,.0f}")
                 st.write("---")
                 st.write(f"**Home Appreciation (-):** ${st.session_state.summary['home_sale_gains']:,.0f}")

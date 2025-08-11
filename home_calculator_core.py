@@ -203,8 +203,10 @@ class HomeCalculatorCore:
         initial_home_value = inputs['home_price']
         home_sale_gains = final_home_value - initial_home_value
         
-        # Calculate selling costs
-        total_selling_costs = final_home_value * ((inputs['brokerage_cost'] + inputs['registration_cost']) / 100)
+        # Calculate selling costs - brokerage on sale price, registration on purchase price
+        brokerage_costs = final_home_value * (inputs['brokerage_cost'] / 100)
+        registration_costs = initial_home_value * (inputs['registration_cost'] / 100)
+        total_selling_costs = brokerage_costs + registration_costs
         
         # Calculate capital gains tax benefit using long-term capital gains rate
         home_capital_gains_rate = inputs.get('capital_gains_tax_rate', 20.0) if inputs.get('capital_gains_tax_rate', 0) > 0 else 20.0
@@ -257,6 +259,8 @@ class HomeCalculatorCore:
             'total_property_tax': total_property_tax,
             'total_maintenance': total_maintenance,
             'total_selling_costs': total_selling_costs,
+            'brokerage_costs': brokerage_costs,
+            'registration_costs': registration_costs,
             'home_sale_gains': home_sale_gains,
             'total_interest_tax_savings': total_interest_tax_savings,
             'capital_gains_tax_savings': capital_gains_tax_savings,
